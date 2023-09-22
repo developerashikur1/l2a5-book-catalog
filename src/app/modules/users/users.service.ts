@@ -46,9 +46,13 @@ const signInUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
     config.jwt.refresh_expires_in as string
   );
 
+  const userInfo = await User.findById(user);
+  console.log(userInfo);
+
   return {
     accessToken,
     refreshToken,
+    userInfo,
   };
 };
 

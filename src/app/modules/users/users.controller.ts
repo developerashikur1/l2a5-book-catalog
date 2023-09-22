@@ -40,6 +40,27 @@ const signInUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const signOutUser = catchAsync(async (req: Request, res: Response) => {
+  const userData = req.body;
+  const result = await UserService.signInUser(userData);
+
+  const { refreshToken, ...rest } = result;
+
+  // set refreshToken
+  const cookieOption = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOption);
+
+  sendReponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Logged in successfully.",
+    data: rest,
+  });
+});
+
 export const UserController = {
   signUpUser,
   signInUser,

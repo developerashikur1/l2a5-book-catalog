@@ -69,21 +69,21 @@ const commentOnBook = catchAsync(async (req: Request, res: Response) => {
 
   const result = await BookService.commentOnBook(bookId, refreshToken, review);
 
-  console.log(result, "comment");
+  sendReponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Commented on book successfully.",
+    data: result,
+  });
+});
 
-  //   const { refreshToken, ...rest } = result;
-
-  // set refreshToken
-  //   const cookieOption = {
-  //     secure: config.env === "production",
-  //     httpOnly: true,
-  //   };
-  //   res.cookie("refreshToken", refreshToken, cookieOption);
+const getSearchOptions = catchAsync(async (req: Request, res: Response) => {
+  const result = await BookService.getSearchOptions();
 
   sendReponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Logged in successfully.",
+    message: "Search options get successfully.",
     data: result,
   });
 });
@@ -94,4 +94,5 @@ export const BookController = {
   getSingleBook,
   deleteBook,
   commentOnBook,
+  getSearchOptions,
 };

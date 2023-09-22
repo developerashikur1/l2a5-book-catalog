@@ -35,6 +35,42 @@ const getAllBooks = async (
     });
   }
 
+  //   console.log(filtersData);
+  //   console.log(
+  //     Object.entries(filtersData).map(([field, value]) => ({
+  //       [field]: value,
+  //     }))
+  //   );
+
+  console.log(filtersData);
+
+  if (Object.keys(filtersData).includes("genre") && filtersData.genre) {
+    andConditions.push({
+      $and: [
+        {
+          genre: filtersData.genre,
+        },
+      ],
+    });
+  }
+
+  if (
+    Object.keys(filtersData).includes("publicationYear") &&
+    filtersData.publicationYear
+  ) {
+    var regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
+    console.log(regexPattern);
+    andConditions.push({
+      $and: [
+        {
+          publicationDate: regexPattern,
+        },
+      ],
+    });
+  }
+
+  console.log(andConditions.forEach((e) => console.log(e)));
+
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
 
@@ -90,6 +126,8 @@ const deleteBook = async (bookId: string): Promise<IBook | null> => {
 const commentOnBook = async (bookId: string, token: string, review: string) => {
   let verifiedToken = null;
 
+  console.log("tokensss", token)
+
   try {
     verifiedToken = jwtHelpers.verifyToken(
       token,
@@ -125,10 +163,47 @@ const commentOnBook = async (bookId: string, token: string, review: string) => {
   return result;
 };
 
+// comment on book
+const getSearchOptions = async () => {
+  try {
+    // Use await to wait for the distinct result.
+    const uniqueGenres = await Book.distinct("genre");
+
+    const uniquePublicationYears = await Book.aggregate([
+      {
+        $project: {
+          year: {
+            $year: { $dateFromString: { dateString: "$publicationDate" } },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$year",
+        },
+      },
+      {
+        $sort: {
+          _id: -1,
+        },
+      },
+    ]);
+
+    return {
+      genre: uniqueGenres,
+      publicationYears: uniquePublicationYears.map((result) => result._id),
+    };
+  } catch (error) {
+    // Handle any errors that may occur during the database operation.
+    throw new ApiError(httpStatus.NOT_FOUND, "Book filters generated failed.");
+  }
+};
+
 export const BookService = {
   createBook,
   getAllBooks,
   getSingleBook,
   deleteBook,
   commentOnBook,
+  getSearchOptions,
 };

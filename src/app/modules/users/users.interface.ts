@@ -20,6 +20,7 @@ export type ILoginUser = {
 export type IUserLoginResponse = {
   accessToken: string;
   refreshToken?: string | undefined;
+  userInfo: IUser | null;
 };
 
 export type IUserExist = {
