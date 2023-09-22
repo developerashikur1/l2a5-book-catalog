@@ -36,9 +36,12 @@ const signInUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email: userEmail, phone: userPhone, _id: user } = isUserExist;
     const accessToken = jwtHelpers_1.jwtHelpers.createToken({ user, userEmail, userPhone }, config_1.default.jwt.access_token, config_1.default.jwt.access_expires_in);
     const refreshToken = jwtHelpers_1.jwtHelpers.createToken({ user, userEmail, userPhone }, config_1.default.jwt.refresh_token, config_1.default.jwt.refresh_expires_in);
+    const userInfo = yield users_model_1.User.findById(user);
+    console.log(userInfo);
     return {
         accessToken,
         refreshToken,
+        userInfo,
     };
 });
 exports.UserService = {

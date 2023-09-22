@@ -67,18 +67,19 @@ const commentOnBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     const bookId = req.params.id;
     const { review } = req.body;
     const result = yield books_service_1.BookService.commentOnBook(bookId, refreshToken, review);
-    console.log(result, "comment");
-    //   const { refreshToken, ...rest } = result;
-    // set refreshToken
-    //   const cookieOption = {
-    //     secure: config.env === "production",
-    //     httpOnly: true,
-    //   };
-    //   res.cookie("refreshToken", refreshToken, cookieOption);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: "Logged in successfully.",
+        message: "Commented on book successfully.",
+        data: result,
+    });
+}));
+const getSearchOptions = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield books_service_1.BookService.getSearchOptions();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Search options get successfully.",
         data: result,
     });
 }));
@@ -88,4 +89,5 @@ exports.BookController = {
     getSingleBook,
     deleteBook,
     commentOnBook,
+    getSearchOptions,
 };

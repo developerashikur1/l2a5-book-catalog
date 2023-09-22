@@ -48,6 +48,35 @@ const getAllBooks = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
             })),
         });
     }
+    //   console.log(filtersData);
+    //   console.log(
+    //     Object.entries(filtersData).map(([field, value]) => ({
+    //       [field]: value,
+    //     }))
+    //   );
+    console.log(filtersData);
+    if (Object.keys(filtersData).includes("genre") && filtersData.genre) {
+        andConditions.push({
+            $and: [
+                {
+                    genre: filtersData.genre,
+                },
+            ],
+        });
+    }
+    if (Object.keys(filtersData).includes("publicationYear") &&
+        filtersData.publicationYear) {
+        var regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
+        console.log(regexPattern);
+        andConditions.push({
+            $and: [
+                {
+                    publicationDate: regexPattern,
+                },
+            ],
+        });
+    }
+    console.log(andConditions.forEach((e) => console.log(e)));
     const { page, limit, skip, sortBy, sortOrder } = paginationHelpers_1.paginationHelpers.calculatePagination(paginationOptions);
     const sortConditions = {};
     if (sortBy && sortOrder) {
@@ -88,6 +117,7 @@ const deleteBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
 // comment on book
 const commentOnBook = (bookId, token, review) => __awaiter(void 0, void 0, void 0, function* () {
     let verifiedToken = null;
+    console.log("tokensss", token);
     try {
         verifiedToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.refresh_token);
         if (!verifiedToken) {
@@ -112,10 +142,45 @@ const commentOnBook = (bookId, token, review) => __awaiter(void 0, void 0, void 
     // .populate("reviews.user");
     return result;
 });
+// comment on book
+const getSearchOptions = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Use await to wait for the distinct result.
+        const uniqueGenres = yield books_model_1.Book.distinct("genre");
+        const uniquePublicationYears = yield books_model_1.Book.aggregate([
+            {
+                $project: {
+                    year: {
+                        $year: { $dateFromString: { dateString: "$publicationDate" } },
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$year",
+                },
+            },
+            {
+                $sort: {
+                    _id: -1,
+                },
+            },
+        ]);
+        return {
+            genre: uniqueGenres,
+            publicationYears: uniquePublicationYears.map((result) => result._id),
+        };
+    }
+    catch (error) {
+        // Handle any errors that may occur during the database operation.
+        throw new ApiErrors_1.default(http_status_1.default.NOT_FOUND, "Book filters generated failed.");
+    }
+});
 exports.BookService = {
     createBook,
     getAllBooks,
     getSingleBook,
     deleteBook,
     commentOnBook,
+    getSearchOptions,
 };

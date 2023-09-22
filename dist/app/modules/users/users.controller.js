@@ -57,6 +57,23 @@ const signInUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: rest,
     });
 }));
+const signOutUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = req.body;
+    const result = yield users_service_1.UserService.signInUser(userData);
+    const { refreshToken } = result, rest = __rest(result, ["refreshToken"]);
+    // set refreshToken
+    const cookieOption = {
+        secure: config_1.default.env === "production",
+        httpOnly: true,
+    };
+    res.cookie("refreshToken", refreshToken, cookieOption);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Logged in successfully.",
+        data: rest,
+    });
+}));
 exports.UserController = {
     signUpUser,
     signInUser,

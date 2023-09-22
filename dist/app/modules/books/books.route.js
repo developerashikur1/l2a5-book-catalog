@@ -9,6 +9,7 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const books_controller_1 = require("./books.controller");
 const books_validation_1 = require("./books.validation");
 const router = express_1.default.Router();
+router.get("/search-options", books_controller_1.BookController.getSearchOptions);
 router.get("/:id", books_controller_1.BookController.getSingleBook);
 router.delete("/:id", books_controller_1.BookController.deleteBook);
 router.patch("/:id", books_controller_1.BookController.commentOnBook);
