@@ -63,10 +63,10 @@ const deleteBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const commentOnBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { refreshToken } = req.cookies;
+    const accessToken = req.headers.authorization;
     const bookId = req.params.id;
     const { review } = req.body;
-    const result = yield books_service_1.BookService.commentOnBook(bookId, refreshToken, review);
+    const result = yield books_service_1.BookService.commentOnBook(bookId, accessToken, review);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

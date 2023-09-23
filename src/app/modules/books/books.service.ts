@@ -126,13 +126,19 @@ const deleteBook = async (bookId: string): Promise<IBook | null> => {
 const commentOnBook = async (bookId: string, token: string, review: string) => {
   let verifiedToken = null;
 
-  console.log("tokensss", token)
-
   try {
-    verifiedToken = jwtHelpers.verifyToken(
-      token,
-      config.jwt.refresh_token as Secret
-    );
+    const partsToken = token.split(" ");
+    if (partsToken.length === 2) {
+      let scheme = partsToken[0];
+      token = partsToken[1];
+
+      if (/^Bearer$/i.test(scheme)) {
+        verifiedToken = jwtHelpers.verifyToken(
+          token,
+          config.jwt.access_token as Secret
+        );
+      }
+    }
 
     if (!verifiedToken) {
       throw new ApiError(httpStatus.FORBIDDEN, "Invalid refresh token.");

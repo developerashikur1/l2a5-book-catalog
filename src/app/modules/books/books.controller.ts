@@ -63,18 +63,18 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
 });
 
 const commentOnBook = catchAsync(async (req: Request, res: Response) => {
-  const { refreshToken } = req.cookies;
+  const accessToken = req.headers.authorization;
   const bookId = req.params.id;
-  const { review } = req.body;
+  const {review} = req.body;
 
-  const result = await BookService.commentOnBook(bookId, refreshToken, review);
+    const result = await BookService.commentOnBook(bookId, accessToken as string, review);
 
-  sendReponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Commented on book successfully.",
-    data: result,
-  });
+    sendReponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Commented on book successfully.",
+      data: result,
+    });
 });
 
 const getSearchOptions = catchAsync(async (req: Request, res: Response) => {

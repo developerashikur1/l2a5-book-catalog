@@ -117,9 +117,15 @@ const deleteBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
 // comment on book
 const commentOnBook = (bookId, token, review) => __awaiter(void 0, void 0, void 0, function* () {
     let verifiedToken = null;
-    console.log("tokensss", token);
     try {
-        verifiedToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.refresh_token);
+        const partsToken = token.split(" ");
+        if (partsToken.length === 2) {
+            let scheme = partsToken[0];
+            token = partsToken[1];
+            if (/^Bearer$/i.test(scheme)) {
+                verifiedToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.access_token);
+            }
+        }
         if (!verifiedToken) {
             throw new ApiErrors_1.default(http_status_1.default.FORBIDDEN, "Invalid refresh token.");
         }
