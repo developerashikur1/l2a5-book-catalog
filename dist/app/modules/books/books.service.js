@@ -48,13 +48,7 @@ const getAllBooks = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
             })),
         });
     }
-    //   console.log(filtersData);
-    //   console.log(
-    //     Object.entries(filtersData).map(([field, value]) => ({
-    //       [field]: value,
-    //     }))
-    //   );
-    console.log(filtersData);
+    //   we are finding books genre 
     if (Object.keys(filtersData).includes("genre") && filtersData.genre) {
         andConditions.push({
             $and: [
@@ -64,10 +58,10 @@ const getAllBooks = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
             ],
         });
     }
+    //   hare we are filtering with publicationYear only
     if (Object.keys(filtersData).includes("publicationYear") &&
         filtersData.publicationYear) {
-        var regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
-        console.log(regexPattern);
+        let regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
         andConditions.push({
             $and: [
                 {
@@ -76,8 +70,9 @@ const getAllBooks = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
             ],
         });
     }
-    console.log(andConditions.forEach((e) => console.log(e)));
+    //   hare we are using pagination setting
     const { page, limit, skip, sortBy, sortOrder } = paginationHelpers_1.paginationHelpers.calculatePagination(paginationOptions);
+    //   hare we are using sorting
     const sortConditions = {};
     if (sortBy && sortOrder) {
         sortConditions[sortBy] = sortOrder;
@@ -99,6 +94,13 @@ const getAllBooks = (filters, paginationOptions) => __awaiter(void 0, void 0, vo
         data: result,
     };
 });
+const editBook = (bookId, bookData) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield books_model_1.Book.findByIdAndUpdate(bookId, bookData, { new: true });
+    if (!result) {
+        throw new ApiErrors_1.default(http_status_1.default.NOT_FOUND, "Book not found!");
+    }
+    return result;
+});
 const getSingleBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield books_model_1.Book.findById(bookId)
         .populate("createdBy")
@@ -117,6 +119,7 @@ const deleteBook = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
 // comment on book
 const commentOnBook = (bookId, token, review) => __awaiter(void 0, void 0, void 0, function* () {
     let verifiedToken = null;
+    // hare we are checking the user authenticate and verified or not.
     try {
         const partsToken = token.split(" ");
         if (partsToken.length === 2) {
@@ -138,14 +141,12 @@ const commentOnBook = (bookId, token, review) => __awaiter(void 0, void 0, void 
         user,
         review,
     };
-    //   console.log(bookId);
+    //   hare we are adding reviews to book
     const result = yield books_model_1.Book.findByIdAndUpdate({ _id: bookId }, {
         $push: {
             reviews: userReviewData,
         },
     });
-    // .populate("createdBy")
-    // .populate("reviews.user");
     return result;
 });
 // comment on book
@@ -186,6 +187,7 @@ exports.BookService = {
     createBook,
     getAllBooks,
     getSingleBook,
+    editBook,
     deleteBook,
     commentOnBook,
     getSearchOptions,

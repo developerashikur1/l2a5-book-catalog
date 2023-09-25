@@ -9,7 +9,12 @@ router.get("/search-options", BookController.getSearchOptions);
 
 router.get("/:id", BookController.getSingleBook);
 router.delete("/:id", BookController.deleteBook);
-router.patch("/:id", BookController.commentOnBook);
+router.put("/:id", BookController.commentOnBook);
+router.patch(
+  "/:id",
+  validateRequest(BookValidation.editBookZodSchema),
+  BookController.editBook
+);
 
 router.post(
   "/create-book",

@@ -19,7 +19,19 @@ const bookZodSchema = z.object({
     bookImage: z.string().optional(),
   }),
 });
+const editBookZodSchema = z.object({
+  body: z.object({
+    title: z.string().optional(),
+    author: z.string().optional(),
+    genre: z.string().optional(),
+    publicationDate: z.string().optional(),
+    // ratings: z.number().optional(),
+    // reviews: z.array(reviewsZodSchema).optional(),
+    bookImage: z.string().optional(),
+  }),
+});
 
 export const BookValidation = {
   bookZodSchema,
+  editBookZodSchema
 };

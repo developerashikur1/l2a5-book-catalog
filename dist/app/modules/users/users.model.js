@@ -47,13 +47,19 @@ exports.UserSchema = new mongoose_1.Schema({
     profileImage: {
         type: String,
     },
-    whiteList: [
+    wishlist: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
             ref: "Book",
         },
     ],
     readingList: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "Book",
+        },
+    ],
+    finishedList: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
             ref: "Book",

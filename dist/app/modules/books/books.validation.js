@@ -20,6 +20,18 @@ const bookZodSchema = zod_1.z.object({
         bookImage: zod_1.z.string().optional(),
     }),
 });
+const editBookZodSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        title: zod_1.z.string().optional(),
+        author: zod_1.z.string().optional(),
+        genre: zod_1.z.string().optional(),
+        publicationDate: zod_1.z.string().optional(),
+        // ratings: z.number().optional(),
+        // reviews: z.array(reviewsZodSchema).optional(),
+        bookImage: zod_1.z.string().optional(),
+    }),
+});
 exports.BookValidation = {
     bookZodSchema,
+    editBookZodSchema
 };

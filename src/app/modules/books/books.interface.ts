@@ -14,6 +14,7 @@ export type IBook = {
   ratings?: number | null;
   reviews?: IReview[];
   bookImage?: string;
+  
 };
 
 export type BookModel = Model<IBook, Record<string, unknown>>;

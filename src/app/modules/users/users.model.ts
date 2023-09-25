@@ -35,13 +35,19 @@ export const UserSchema = new Schema<IUser, UserModel>(
     profileImage: {
       type: String,
     },
-    whiteList: [
+    wishlist: [
       {
         type: Schema.Types.ObjectId,
         ref: "Book",
       },
     ],
     readingList: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Book",
+      },
+    ],
+    finishedList: [
       {
         type: Schema.Types.ObjectId,
         ref: "Book",

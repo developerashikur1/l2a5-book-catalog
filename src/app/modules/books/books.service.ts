@@ -35,15 +35,7 @@ const getAllBooks = async (
     });
   }
 
-  //   console.log(filtersData);
-  //   console.log(
-  //     Object.entries(filtersData).map(([field, value]) => ({
-  //       [field]: value,
-  //     }))
-  //   );
-
-  console.log(filtersData);
-
+//   we are finding books genre 
   if (Object.keys(filtersData).includes("genre") && filtersData.genre) {
     andConditions.push({
       $and: [
@@ -54,12 +46,12 @@ const getAllBooks = async (
     });
   }
 
+//   hare we are filtering with publicationYear only
   if (
     Object.keys(filtersData).includes("publicationYear") &&
     filtersData.publicationYear
   ) {
-    var regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
-    console.log(regexPattern);
+    let regexPattern = new RegExp(".*" + filtersData.publicationYear + "-.*");
     andConditions.push({
       $and: [
         {
@@ -69,11 +61,12 @@ const getAllBooks = async (
     });
   }
 
-  console.log(andConditions.forEach((e) => console.log(e)));
 
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginationHelpers.calculatePagination(paginationOptions);
+//   hare we are using pagination setting
+const { page, limit, skip, sortBy, sortOrder } =
+paginationHelpers.calculatePagination(paginationOptions);
 
+//   hare we are using sorting
   const sortConditions: { [key: string]: SortOrder } = {};
 
   if (sortBy && sortOrder) {
@@ -102,6 +95,15 @@ const getAllBooks = async (
   };
 };
 
+const editBook = async (bookId: string, bookData: Partial<IBook>): Promise<IBook | null> => {   
+    const result = await Book.findByIdAndUpdate(bookId, bookData, {new: true})
+    if (!result) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Book not found!");
+    }
+    
+  return result;
+};
+
 const getSingleBook = async (bookId: string): Promise<IBook | null> => {
   const result = await Book.findById(bookId)
     .populate("createdBy")
@@ -126,6 +128,7 @@ const deleteBook = async (bookId: string): Promise<IBook | null> => {
 const commentOnBook = async (bookId: string, token: string, review: string) => {
   let verifiedToken = null;
 
+  // hare we are checking the user authenticate and verified or not.
   try {
     const partsToken = token.split(" ");
     if (partsToken.length === 2) {
@@ -154,7 +157,7 @@ const commentOnBook = async (bookId: string, token: string, review: string) => {
     review,
   };
 
-  //   console.log(bookId);
+//   hare we are adding reviews to book
   const result = await Book.findByIdAndUpdate(
     { _id: bookId },
     {
@@ -163,8 +166,6 @@ const commentOnBook = async (bookId: string, token: string, review: string) => {
       },
     }
   );
-  // .populate("createdBy")
-  // .populate("reviews.user");
 
   return result;
 };
@@ -209,6 +210,7 @@ export const BookService = {
   createBook,
   getAllBooks,
   getSingleBook,
+  editBook,
   deleteBook,
   commentOnBook,
   getSearchOptions,

@@ -10,7 +10,7 @@ const signUpZodSchema = z.object({
     address: z.string({ required_error: "Address is required" }),
     profession: z.string().optional(),
     profileImage: z.string().optional(),
-    whiteList: z
+    wishlist: z
       .array(
         z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), {
           message: "Invalid ObjectId",
@@ -18,6 +18,13 @@ const signUpZodSchema = z.object({
       )
       .optional(),
     readingList: z
+      .array(
+        z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), {
+          message: "Invalid ObjectId",
+        })
+      )
+      .optional(),
+      finishedList: z
       .array(
         z.string().refine((value) => mongoose.Types.ObjectId.isValid(value), {
           message: "Invalid ObjectId",
@@ -34,7 +41,14 @@ const signInZodSchema = z.object({
   }),
 });
 
+const addToWishList = z.object({
+  body: z.object({
+    bookId: z.string({ required_error: "BookId is required" }),
+  }),
+});
+
 export const UserValidation = {
   signUpZodSchema,
   signInZodSchema,
+  addToWishList,
 };

@@ -15,12 +15,17 @@ const signUpZodSchema = zod_1.z.object({
         address: zod_1.z.string({ required_error: "Address is required" }),
         profession: zod_1.z.string().optional(),
         profileImage: zod_1.z.string().optional(),
-        whiteList: zod_1.z
+        wishlist: zod_1.z
             .array(zod_1.z.string().refine((value) => mongoose_1.default.Types.ObjectId.isValid(value), {
             message: "Invalid ObjectId",
         }))
             .optional(),
         readingList: zod_1.z
+            .array(zod_1.z.string().refine((value) => mongoose_1.default.Types.ObjectId.isValid(value), {
+            message: "Invalid ObjectId",
+        }))
+            .optional(),
+        finishedList: zod_1.z
             .array(zod_1.z.string().refine((value) => mongoose_1.default.Types.ObjectId.isValid(value), {
             message: "Invalid ObjectId",
         }))
@@ -33,7 +38,13 @@ const signInZodSchema = zod_1.z.object({
         password: zod_1.z.string({ required_error: "Password is required" }),
     }),
 });
+const addToWishList = zod_1.z.object({
+    body: zod_1.z.object({
+        bookId: zod_1.z.string({ required_error: "BookId is required" }),
+    }),
+});
 exports.UserValidation = {
     signUpZodSchema,
     signInZodSchema,
+    addToWishList,
 };

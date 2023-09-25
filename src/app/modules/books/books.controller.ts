@@ -65,16 +65,20 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
 const commentOnBook = catchAsync(async (req: Request, res: Response) => {
   const accessToken = req.headers.authorization;
   const bookId = req.params.id;
-  const {review} = req.body;
+  const { review } = req.body;
 
-    const result = await BookService.commentOnBook(bookId, accessToken as string, review);
+  const result = await BookService.commentOnBook(
+    bookId,
+    accessToken as string,
+    review
+  );
 
-    sendReponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Commented on book successfully.",
-      data: result,
-    });
+  sendReponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Commented on book successfully.",
+    data: result,
+  });
 });
 
 const getSearchOptions = catchAsync(async (req: Request, res: Response) => {
@@ -88,8 +92,22 @@ const getSearchOptions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const editBook = catchAsync(async (req: Request, res: Response) => {
+  const bookId = req.params.id;
+  const bookData = req.body;
+  const result = await BookService.editBook(bookId, bookData);
+
+  sendReponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book updated successfully.",
+    data: result,
+  });
+});
+
 export const BookController = {
   createBook,
+  editBook,
   getAllBook,
   getSingleBook,
   deleteBook,

@@ -8,8 +8,9 @@ export type IUser = {
   address: string;
   profession: string;
   profileImage?: string;
-  whiteList?: Types.ObjectId[];
+  wishlist?: Types.ObjectId[];
   readingList?: Types.ObjectId[];
+  finishedList?: Types.ObjectId[];
 };
 
 export type ILoginUser = {

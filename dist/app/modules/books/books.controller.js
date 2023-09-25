@@ -83,8 +83,20 @@ const getSearchOptions = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         data: result,
     });
 }));
+const editBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const bookId = req.params.id;
+    const bookData = req.body;
+    const result = yield books_service_1.BookService.editBook(bookId, bookData);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Book updated successfully.",
+        data: result,
+    });
+}));
 exports.BookController = {
     createBook,
+    editBook,
     getAllBook,
     getSingleBook,
     deleteBook,
